@@ -13,5 +13,5 @@ func main() {
 	// 	fmt.Println("Error: ", err)
 	// }
 	// buckets.ListBuckets()
-
+	// util.GetDynamoDbTables()
 }
