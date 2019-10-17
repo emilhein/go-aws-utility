@@ -1,0 +1,12 @@
+language: go
+
+go:
+    - "1.12.x"
+before_install:
+    - go get -u github.com/golang/dep/cmd/dep
+
+install:
+    - go get -t -v ./...
+
+script:
+    - go test ./... -v # Run all the tests
