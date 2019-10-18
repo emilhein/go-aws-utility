@@ -1,9 +1,9 @@
 package main
 
-import (
+// "encoding/json"
 // "fmt"
+
 // "github.com/go-aws-utility/util"
-)
 
 func main() {
 	// credentials := util.GetAccountInfo()
@@ -13,5 +13,5 @@ func main() {
 	// 	fmt.Println("Error: ", err)
 	// }
 	// buckets.ListBuckets()
-	// util.GetDynamoDbTables()
+
 }
