@@ -2,9 +2,11 @@ package util
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"sync"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -34,9 +36,12 @@ type FilesOutput struct {
 }
 
 type S3Input struct {
-	Key    string
-	Bucket string
+	Key         string
+	Bucket      string
+	FileChannel chan []byte
 }
+
+var wg sync.WaitGroup
 
 func (b *BucketList) ListBuckets() {
 	for i := 0; i < len(b.Names); i++ {
@@ -44,15 +49,32 @@ func (b *BucketList) ListBuckets() {
 	}
 }
 
-func GetS3Files(f FilesInput) (FilesOutput, error) {
-
-	input := S3Input{Bucket: f.Bucket, Key: f.FileNames[0]}
-	res, err := ReadFile(input)
-	if err != nil {
-		return FilesOutput{}, err // errors.New("Could not get any tables", err.String())
+func GetS3Files(f FilesInput) {
+	wg.Add(len(f.FileNames))
+	fileChannel := make(chan []byte, len(f.FileNames))
+	for w := 0; w < len(f.FileNames); w++ {
+		input := S3Input{Bucket: f.Bucket, Key: f.FileNames[w], FileChannel: fileChannel}
+		go ReadFile(input)
 	}
-	result := FilesOutput{Status: true, FileContents: res}
-	return result, nil
+
+	for elem := range fileChannel {
+		fmt.Println("From Finder: ")
+		var randomObject interface{}
+		json.Unmarshal(elem, &randomObject)
+
+		fmt.Println("", randomObject)
+
+	}
+	close(fileChannel)
+
+	wg.Wait()
+	fmt.Println("Files read!")
+	// res, err :=
+	// if err != nil {
+	// 	return FilesOutput{}, err // errors.New("Could not get any tables", err.String())
+	// }
+	// result := FilesOutput{Status: true, FileContents: res}
+	// return result, nil
 }
 func GetConfig() *session.Session {
 	sess, err := session.NewSession(&aws.Config{Region: aws.String(S3_REGION)})
@@ -106,10 +128,13 @@ func GetS3Buckets() (BucketList, error) {
 	return BucketList{}, errors.New("Could not get any buckets")
 }
 
-func ReadFile(h S3Input) ([]byte, error) {
-
+func ReadFile(h S3Input) {
+	defer wg.Done()
+	fmt.Println("Reading file..")
 	sess, err := session.NewSession(&aws.Config{Region: aws.String(S3_REGION)})
 	if err != nil {
+		fmt.Println("Error")
+
 		// Handle error
 	}
 	results, err := s3.New(sess).GetObject(&s3.GetObjectInput{
@@ -117,13 +142,18 @@ func ReadFile(h S3Input) ([]byte, error) {
 		Key:    aws.String(h.Key),
 	})
 	if err != nil {
-		return nil, err
+		fmt.Println("Error getting file")
+		// return nil, err
 	}
 	defer results.Body.Close()
 
 	buf := bytes.NewBuffer(nil)
 	if _, err := io.Copy(buf, results.Body); err != nil {
-		return nil, err
+		fmt.Println("Error copying to buffer")
+
+		// return nil, err
 	}
-	return buf.Bytes(), nil
+	h.FileChannel <- buf.Bytes() //send file to channel
+
+	// return buf.Bytes(), nil
 }
