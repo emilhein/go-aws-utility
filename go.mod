@@ -1,4 +1,4 @@
-module github.com/go-aws-utility
+module github.com/emilhein/go-aws-utility
 
 go 1.13
 
