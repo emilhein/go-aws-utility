@@ -1,26 +1,26 @@
 package main
 
-// "encoding/json"
-// "fmt"
-
-// "github.com/go-aws-utility/util"
+import (
+	"fmt"
+	"github.com/go-aws-utility/util"
+)
 
 func main() {
-	// credentials := util.GetAccountInfo()
-	// fmt.Printf("We found your acocunt Key: %v", credentials)
-	// buckets, err := util.GetS3Buckets()
-	// if err != nil {
-	// 	fmt.Println("Error: ", err)
-	// }
-	// buckets.ListBuckets()
-	// input := util.FilesInput{Bucket: "Some test", FileNames: []string{"folder/file1"}}
-	// results, err := util.GetS3Files(input)
-	// if err != nil {
-	// 	fmt.Println("Error: ", err)
-	// }
-	// var randomObject interface{}
-	// json.Unmarshal(results.FileContents, &randomObject)
+	// Get credentials
 
-	// fmt.Println("", randomObject)
+	credentials := util.GetAccountInfo()
+	fmt.Printf("We found your acocunt Key: %v", credentials)
+
+	//list buckets
+	buckets, err := util.GetS3Buckets()
+	if err != nil {
+		fmt.Println("Error: ", err)
+	}
+	buckets.ListBuckets()
+
+	// read files in parrallel
+	input := util.FilesInput{Bucket: "[YOUR-BUCKET]", FileNames: []string{"Filepath1", "filepath2"}}
+	util.GetS3Files(input)
+	fmt.Println("All files read!")
 
 }
