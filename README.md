@@ -4,6 +4,7 @@
 # go-aws-utility
 
 This project acts like a wrapper for the AWS go SDK.
+More functionality will be following...
 
 ## How to use
 
