@@ -8,10 +8,10 @@ import (
 func main() {
 	// USE TGIS FOR LOCAL TESTING
 
-	// // Get credentials
+	// Get credentials
 
 	// credentials := util.GetAccountInfo()
-	// fmt.Printf("We found your acocunt Key: %v", credentials)
+	// fmt.Printf("We found your acocunt Key: %v \n", credentials)
 
 	// //list buckets
 	// buckets, err := util.GetS3Buckets()
@@ -21,7 +21,7 @@ func main() {
 	// buckets.ListBuckets()
 
 	// // read files in parrallel
-	// input := util.FilesInput{Bucket: "[YOUR-BUCKET]", FileNames: []string{"Filepath1", "filepath2"}}
+	// input := util.FilesInput{Bucket: "jubii-bi-inbox", FileNames: []string{"reports/fees.json"}}
 	// util.GetS3Files(input)
 	// fmt.Println("All files read!")
 
