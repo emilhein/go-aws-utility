@@ -1,26 +1,28 @@
 package main
 
 import (
-	"fmt"
-	"github.com/go-aws-utility/util"
+// "fmt"
+// "github.com/go-aws-utility/util"
 )
 
 func main() {
-	// Get credentials
+	// USE TGIS FOR LOCAL TESTING
 
-	credentials := util.GetAccountInfo()
-	fmt.Printf("We found your acocunt Key: %v", credentials)
+	// // Get credentials
 
-	//list buckets
-	buckets, err := util.GetS3Buckets()
-	if err != nil {
-		fmt.Println("Error: ", err)
-	}
-	buckets.ListBuckets()
+	// credentials := util.GetAccountInfo()
+	// fmt.Printf("We found your acocunt Key: %v", credentials)
 
-	// read files in parrallel
-	input := util.FilesInput{Bucket: "[YOUR-BUCKET]", FileNames: []string{"Filepath1", "filepath2"}}
-	util.GetS3Files(input)
-	fmt.Println("All files read!")
+	// //list buckets
+	// buckets, err := util.GetS3Buckets()
+	// if err != nil {
+	// 	fmt.Println("Error: ", err)
+	// }
+	// buckets.ListBuckets()
+
+	// // read files in parrallel
+	// input := util.FilesInput{Bucket: "[YOUR-BUCKET]", FileNames: []string{"Filepath1", "filepath2"}}
+	// util.GetS3Files(input)
+	// fmt.Println("All files read!")
 
 }
