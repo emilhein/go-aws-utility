@@ -29,7 +29,7 @@ func main() {
 	buckets.ListBuckets()
 
 	// read files in parrallel
-	input := services.FilesInput{Bucket: "jubii-bi-inbox", FileNames: []string{"reports/fees.json"}}
+	input := services.FilesInput{Bucket: "YOUR_BUCKET", FileNames: []string{"PATH_TO_FILE"}}
 	returnValues := services.GetS3Files(input)
 
 	fmt.Println("All files read!")
