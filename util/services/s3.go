@@ -1,4 +1,4 @@
-package util
+package services
 
 import (
 	"bytes"
@@ -28,6 +28,10 @@ type BucketList struct {
 	Names []string
 }
 
+type S3JSONFiles struct {
+	Files []interface{}
+}
+
 func (b *BucketList) ListBuckets() {
 	for i := 0; i < len(b.Names); i++ {
 		fmt.Println("", b.Names[i])
@@ -51,7 +55,7 @@ func GetS3Buckets() (BucketList, error) {
 	return BucketList{}, errors.New("Could not get any buckets")
 }
 
-func GetS3Files(f FilesInput) {
+func GetS3Files(f FilesInput) S3JSONFiles {
 	fileChannel := make(chan []byte, len(f.FileNames))
 	var wg sync.WaitGroup
 
@@ -63,13 +67,16 @@ func GetS3Files(f FilesInput) {
 	wg.Wait()
 	close(fileChannel)
 
+	var fileList []interface{}
+
 	for elem := range fileChannel {
-		fmt.Println("From Finder: ")
+		fmt.Println("Paring file to JSON... ")
 		var randomObject interface{}
 		json.Unmarshal(elem, &randomObject)
-		fmt.Println("", randomObject)
+		fileList = append(fileList, randomObject)
 
 	}
+	return S3JSONFiles{Files: fileList}
 }
 
 func ReadFile(h S3Input) {

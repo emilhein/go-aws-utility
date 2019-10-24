@@ -1,4 +1,4 @@
-package util
+package services
 
 type Account struct {
 	AccessKeyID string

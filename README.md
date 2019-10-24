@@ -13,24 +13,32 @@ package main
 
 import (
 	"fmt"
-	"github.com/emilhein/go-aws-utility/util"
+	"github.com/go-aws-utility/util/services"
 )
+
 func main() {
 	// Get credentials
+	credentials := services.GetAccountInfo()
+	fmt.Printf("We found your acocunt Key: %v \n", credentials)
 
-	credentials := util.GetAccountInfo()
-	fmt.Printf("We found your acocunt Key: %v", credentials)
-
-	//list buckets
-	buckets, err := util.GetS3Buckets()
+	// //list buckets
+	buckets, err := services.GetS3Buckets()
 	if err != nil {
 		fmt.Println("Error: ", err)
 	}
 	buckets.ListBuckets()
 
 	// read files in parrallel
-	input := util.FilesInput{Bucket: "[YOUR-BUCKET]", FileNames: []string{"Filepath1", "filepath2"}}
-	util.GetS3Files(input)
+	input := services.FilesInput{Bucket: "jubii-bi-inbox", FileNames: []string{"reports/fees.json"}}
+	returnValues := services.GetS3Files(input)
+
 	fmt.Println("All files read!")
+	for i := 0; i < len(returnValues.Files); i++ {
+		fmt.Println("", returnValues.Files[i])
+
+	}
+
+}
+
 
 ```

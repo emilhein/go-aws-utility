@@ -2,27 +2,29 @@ package main
 
 import (
 // "fmt"
-// "github.com/go-aws-utility/util"
+// "github.com/go-aws-utility/util/services"
 )
 
 func main() {
-	// USE TGIS FOR LOCAL TESTING
-
 	// Get credentials
-
-	// credentials := util.GetAccountInfo()
+	// credentials := services.GetAccountInfo()
 	// fmt.Printf("We found your acocunt Key: %v \n", credentials)
 
-	// //list buckets
-	// buckets, err := util.GetS3Buckets()
+	// // //list buckets
+	// buckets, err := services.GetS3Buckets()
 	// if err != nil {
 	// 	fmt.Println("Error: ", err)
 	// }
 	// buckets.ListBuckets()
 
 	// // read files in parrallel
-	// input := util.FilesInput{Bucket: "jubii-bi-inbox", FileNames: []string{"reports/fees.json"}}
-	// util.GetS3Files(input)
+	// input := services.FilesInput{Bucket: "jubii-bi-inbox", FileNames: []string{"reports/fees.json"}}
+	// returnValues := services.GetS3Files(input)
+
 	// fmt.Println("All files read!")
+	// for i := 0; i < len(returnValues.Files); i++ {
+	// 	fmt.Println("", returnValues.Files[i])
+
+	// }
 
 }
