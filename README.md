@@ -8,7 +8,7 @@ More functionality will be following...
 
 ## How to use
 
-```
+```go
 package main
 
 import (

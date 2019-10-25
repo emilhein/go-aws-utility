@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"io"
 	"sync"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 
 	"github.com/aws/aws-sdk-go/service/s3"
 )
@@ -70,7 +71,7 @@ func GetS3Files(f FilesInput) S3JSONFiles {
 	var fileList []interface{}
 
 	for elem := range fileChannel {
-		fmt.Println("Paring file to JSON... ")
+		fmt.Printf("Parsing file to JSON... \n")
 		var randomObject interface{}
 		json.Unmarshal(elem, &randomObject)
 		fileList = append(fileList, randomObject)
@@ -81,7 +82,7 @@ func GetS3Files(f FilesInput) S3JSONFiles {
 
 func ReadFile(h S3Input) {
 	defer h.Wg.Done()
-	fmt.Println("Reading file..")
+	fmt.Printf("Reading file.. %v/%v  \n", h.Bucket, h.Key)
 	sess, err := session.NewSession(&aws.Config{Region: aws.String(S3_REGION)})
 	if err != nil {
 		fmt.Println("Error")
