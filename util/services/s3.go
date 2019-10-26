@@ -58,6 +58,7 @@ func GetS3Buckets() (BucketList, error) {
 
 func GetS3Files(f FilesInput) S3JSONFiles {
 	fileChannel := make(chan []byte, len(f.FileNames))
+	resultC := make(chan []interface{})
 	var wg sync.WaitGroup
 
 	for w := 0; w < len(f.FileNames); w++ {
@@ -65,24 +66,30 @@ func GetS3Files(f FilesInput) S3JSONFiles {
 		input := S3Input{Bucket: f.Bucket, Key: f.FileNames[w], FileChannel: fileChannel, Wg: &wg}
 		go ReadFile(input)
 	}
+
+	go combineFile(fileChannel, resultC)
 	wg.Wait()
 	close(fileChannel)
+	result := <-resultC
 
+	return S3JSONFiles{Files: result}
+}
+
+func combineFile(fileChannel <-chan []byte, resultC chan<- []interface{}) {
 	var fileList []interface{}
 
 	for elem := range fileChannel {
-		fmt.Printf("Parsing file to JSON... \n")
+		// fmt.Println("Reading FROM channel")
 		var randomObject interface{}
 		json.Unmarshal(elem, &randomObject)
+		fmt.Printf("Parsing file to JSON... \n")
 		fileList = append(fileList, randomObject)
-
 	}
-	return S3JSONFiles{Files: fileList}
+	resultC <- fileList
 }
 
 func ReadFile(h S3Input) {
 	defer h.Wg.Done()
-	fmt.Printf("Reading file.. %v/%v  \n", h.Bucket, h.Key)
 	sess, err := session.NewSession(&aws.Config{Region: aws.String(S3_REGION)})
 	if err != nil {
 		fmt.Println("Error")
@@ -101,5 +108,9 @@ func ReadFile(h S3Input) {
 	if _, err := io.Copy(buf, results.Body); err != nil {
 		fmt.Println("Error copying to buffer")
 	}
+	fmt.Printf("File:  %v/%v   read!\n", h.Bucket, h.Key)
+
+	// fmt.Println("Sending INTO channel")
 	h.FileChannel <- buf.Bytes() //send file to channel
+
 }
